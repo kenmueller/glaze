@@ -88,6 +88,11 @@ export default () => {
 			.doc(`chats/${chatId}`)
 			.onSnapshot(
 				snapshot => {
+					if (!snapshot.exists)
+						return firestore.doc(`requests/${uid}`).set({
+							available: false
+						})
+					
 					for (const key of snapshot.get('typing') ?? [])
 						if (key !== uid)
 							return setIsTyping(true)
@@ -157,6 +162,19 @@ export default () => {
 					from: uid,
 					data
 				})
+		}, [chatId, uid]),
+		stopChat: useCallback(() => {
+			if (!chatId)
+				return
+			
+			const batch = firestore.batch()
+			
+			batch.delete(firestore.doc(`chats/${chatId}`))
+			batch.set(firestore.doc(`requests/${uid}`), {
+				available: false
+			})
+			
+			batch.commit()
 		}, [chatId, uid])
 	}
 }

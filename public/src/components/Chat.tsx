@@ -6,8 +6,12 @@ import useChat from '../hooks/useChat'
 import '../scss/components/Chat.scss'
 
 export default () => {
-	const { isReady, isTyping, setIsTyping, messages, sendMessage } = useChat()
+	const { isReady, isTyping, setIsTyping, messages, sendMessage, stopChat } = useChat()
 	const [message, setMessage] = useState('')
+	
+	const next = useCallback(() => {
+		stopChat()
+	}, [stopChat])
 	
 	const send = useCallback((event: FormEvent) => {
 		event.preventDefault()
@@ -26,6 +30,10 @@ export default () => {
 	}, [message]) // eslint-disable-line
 	
 	useEffect(() => {
+		window.onbeforeunload = stopChat
+	}, [stopChat])
+	
+	useEffect(() => {
 		setIsTyping(Boolean(message))
 	}, [message, setIsTyping])
 	
@@ -34,7 +42,7 @@ export default () => {
 			{isReady
 				? (
 					<>
-						<button className="next">
+						<button className="next" onClick={next}>
 							Next chat
 						</button>
 						<div ref={onMessagesRef} className="messages">
@@ -73,7 +81,7 @@ export default () => {
 				: (
 					<>
 						<div className="loader" />
-						<p>Searching for a stranger...</p>
+						<p>Searching for someone...</p>
 					</>
 				)
 			}

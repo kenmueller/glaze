@@ -15,6 +15,7 @@
 	max-width: calc(min(800px, 100vw - 20px * 2));
 	width: 100%;
 	height: calc(100vh - 180px);
+	overflow: hidden;
 	margin: 0 auto 75px;
 	padding: 12px 0;
 	border: 2px solid #4a5863;
