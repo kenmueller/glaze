@@ -1,0 +1,18 @@
+#root {
+	height: 100vh;
+	overflow: hidden;
+	
+	> .title {
+		margin: 20px 40px;
+		font-size: 50px;
+		font-weight: 900;
+		color: white;
+		animation: italicize 10s linear infinite alternate;
+		
+		@keyframes italicize {
+			to {
+				transform: skewX(-60deg);
+			}
+		}
+	}
+}
