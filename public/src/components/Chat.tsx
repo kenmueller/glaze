@@ -74,7 +74,7 @@ export default () => {
 						</div>
 						<div ref={onMessagesRef} className="messages">
 							<p className="header">
-								This is the start of a beautiful thing.
+								This is the tale of a beautiful thing.
 							</p>
 							{messages.map(({ id, didSend, data }) => (
 								<p
