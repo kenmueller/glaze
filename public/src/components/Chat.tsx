@@ -6,7 +6,15 @@ import useChat from '../hooks/useChat'
 import '../scss/components/Chat.scss'
 
 export default () => {
-	const { isReady, isTyping, setIsTyping, messages, sendMessage, stopChat } = useChat()
+	const {
+		isReady,
+		pendingMessage,
+		setPendingMessage,
+		messages,
+		sendMessage,
+		stopChat
+	} = useChat()
+	
 	const [message, setMessage] = useState('')
 	
 	const next = useCallback(() => {
@@ -23,7 +31,7 @@ export default () => {
 	const onMessagesRef = useCallback((div: HTMLDivElement | null) => {
 		if (div)
 			div.scrollTop = div.scrollHeight
-	}, [messages]) // eslint-disable-line
+	}, [messages, pendingMessage]) // eslint-disable-line
 	
 	const onInputRef = useCallback((input: HTMLInputElement | null) => {
 		input?.focus()
@@ -34,8 +42,8 @@ export default () => {
 	}, [stopChat])
 	
 	useEffect(() => {
-		setIsTyping(Boolean(message))
-	}, [message, setIsTyping])
+		setPendingMessage(message)
+	}, [message, setPendingMessage])
 	
 	return (
 		<div className={cx('chat', { loading: !isReady })}>
@@ -57,11 +65,9 @@ export default () => {
 									{data}
 								</p>
 							))}
-							{isTyping && (
-								<div className="typing-indicator">
-									<span />
-									<span />
-									<span />
+							{pendingMessage && (
+								<div className="message pending">
+									{pendingMessage}
 								</div>
 							)}
 						</div>

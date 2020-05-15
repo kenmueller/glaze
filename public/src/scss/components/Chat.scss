@@ -26,6 +26,10 @@
 		align-items: center;
 		padding: 12px;
 		
+		> * {
+			flex-shrink: 0;
+		}
+		
 		> .loader {
 			$dimension: 30px;
 			$border-width: 4px;
@@ -84,15 +88,25 @@
 			opacity: 0.7;
 		}
 		
-		> .message,
-		> .typing-indicator {
+		> .message {
 			max-width: 75%;
 			width: max-content;
 			overflow: hidden;
 			padding: 6px 20px;
+			color: #233446;
 			background: #f0f1f8;
 			border-radius: 18px;
 			animation: message 0.15s ease-in-out;
+			
+			&.did-send {
+				margin-left: auto;
+				color: white;
+				background: $light-blue;
+			}
+			
+			&.pending {
+				opacity: 0.3;
+			}
 			
 			&:not(:last-child) {
 				margin-bottom: 8px;
@@ -106,54 +120,6 @@
 				
 				50% {
 					transform: scale(1.05);
-				}
-			}
-		}
-		
-		> .message {
-			color: #233446;
-			
-			&.did-send {
-				margin-left: auto;
-				color: white;
-				background: $light-blue;
-			}
-		}
-		
-		> .typing-indicator {
-			display: flex;
-			align-items: center;
-			height: 36px;
-			
-			> span {
-				$dimension: 10px;
-				
-				width: $dimension;
-				height: $dimension;
-				background: #233446;
-				border-radius: 50%;
-				animation: typing-indicator-dot 0.5s linear infinite alternate;
-				
-				@for $i from 1 through 3 {
-					&:nth-child(#{$i}) {
-						animation-delay: ($i - 1) * 0.2s;
-					}
-				}
-				
-				&:not(:last-child) {
-					margin-right: 4px;
-				}
-				
-				@keyframes typing-indicator-dot {
-					0% {
-						opacity: 0.7;
-						transform: translateY(-2px);
-					}
-					
-					50% {
-						opacity: 1;
-						transform: none;
-					}
 				}
 			}
 		}

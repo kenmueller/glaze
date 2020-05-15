@@ -11,14 +11,13 @@ export interface Message {
 	data: string
 }
 
-const { FieldValue } = firebase.firestore
 const firestore = firebase.firestore()
 
 export default () => {
 	const [isReady, setIsReady] = useState(false)
 	const [chatId, setChatId] = useState(null as string | null)
 	
-	const [isTyping, setIsTyping] = useState(false)
+	const [pendingMessage, setPendingMessage] = useState(null as string | null)
 	const [messages, setMessages] = useState([] as Message[])
 	
 	const uid = useUID()
@@ -93,11 +92,18 @@ export default () => {
 							available: false
 						})
 					
-					for (const key of snapshot.get('typing') ?? [])
-						if (key !== uid)
-							return setIsTyping(true)
+					const pendingMessages: (
+						Record<string, string> | undefined
+					) = snapshot.get('pendingMessages')
 					
-					setIsTyping(false)
+					if (!pendingMessages)
+						return
+					
+					for (const [key, message] of Object.entries(pendingMessages))
+						if (key !== uid)
+							return setPendingMessage(message)
+					
+					setPendingMessage(null)
 				},
 				error => {
 					alert(error.message)
@@ -141,18 +147,18 @@ export default () => {
 			removeChatListener()
 			removeMessagesListener()
 			
-			setIsTyping(false)
+			setPendingMessage(null)
 			setMessages([])
 		}
 	}, [chatId, uid, loadChat])
 	
 	return {
 		isReady,
-		isTyping,
-		setIsTyping: useCallback((isTyping: boolean) => {
+		pendingMessage,
+		setPendingMessage: useCallback((message: string) => {
 			if (chatId)
 				firestore.doc(`chats/${chatId}`).update({
-					typing: FieldValue[isTyping ? 'arrayUnion' : 'arrayRemove'](uid)
+					[`pendingMessages.${uid}`]: message
 				})
 		}, [chatId, uid]),
 		messages,
@@ -174,7 +180,7 @@ export default () => {
 				available: false
 			})
 			
-			batch.commit()
+			return batch.commit()
 		}, [chatId, uid])
 	}
 }
