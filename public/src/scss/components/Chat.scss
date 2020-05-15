@@ -7,165 +7,198 @@
 	}
 }
 
-.chat {
-	$border-radius: 17.5px;
-	
-	display: flex;
-	flex-direction: column;
+.chat-container {
 	max-width: calc(min(800px, 100vw - 20px * 2));
-	width: 100%;
-	height: calc(100vh - 180px);
-	overflow: hidden;
-	margin: 0 auto 75px;
-	padding: 12px 0;
-	border: 2px solid #4a5863;
-	border-radius: $border-radius;
+	margin: 0 auto;
 	
-	&.loading {
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
+	> .chat {
+		$border-radius: 17.5px;
 		
-		> * {
-			flex-shrink: 0;
-		}
+		display: flex;
+		flex-direction: column;
+		height: calc(100vh - 200px);
+		overflow: hidden;
+		padding: 12px 0;
+		border: 2px solid #4a5863;
+		border-radius: $border-radius;
 		
-		> .loader {
-			$dimension: 30px;
-			$border-width: 4px;
-			$border-color: white;
+		&.loading {
+			justify-content: center;
+			align-items: center;
+			padding: 12px;
 			
-			width: $dimension;
-			height: $dimension;
-			border: $border-width solid transparent;
-			border-top: $border-width solid $border-color;
-			border-right: $border-width solid $border-color;
-			border-radius: 50%;
-			animation: loader 0.8s linear infinite;
+			> * {
+				flex-shrink: 0;
+			}
 			
-			@keyframes loader {
-				to {
-					transform: rotate(1turn);
+			> .loader {
+				$dimension: 30px;
+				$border-width: 4px;
+				$border-color: white;
+				
+				width: $dimension;
+				height: $dimension;
+				border: $border-width solid transparent;
+				border-top: $border-width solid $border-color;
+				border-right: $border-width solid $border-color;
+				border-radius: 50%;
+				animation: loader 0.8s linear infinite;
+				
+				@keyframes loader {
+					to {
+						transform: rotate(1turn);
+					}
 				}
 			}
-		}
-		
-		> p {
-			margin-top: 20px;
-			font-weight: 900;
-			color: white;
-		}
-	}
-	
-	> .header {
-		display: flex;
-		align-items: center;
-		margin: 0 12px;
-		
-		> .online {
-			margin-left: 12px;
-			font-weight: 900;
-			color: white;
-		}
-		
-		> .next {
-			@include invert-on-hover;
 			
-			$height: $border-radius * 2;
-			
-			height: $height;
-			margin-left: auto;
-			padding: 0 20px;
-			line-height: $height;
-			font-weight: 900;
-			color: white;
-			background: $light-blue;
-			border-radius: $border-radius;
-			transition: color 0.3s, background 0.3s;
+			> p {
+				margin-top: 20px;
+				font-weight: 900;
+				color: white;
+			}
 		}
-	}
-	
-	> .messages {
-		flex-grow: 1;
-		overflow-y: auto;
-		scroll-behavior: smooth;
-		margin: 12px 0 12px;
-		padding: 4px 22px;
 		
 		> .header {
-			margin: 4px 0 16px;
-			text-align: center;
-			font-weight: 900;
-			color: white;
-			opacity: 0.7;
-		}
-		
-		> .message {
-			max-width: 75%;
-			width: max-content;
-			overflow: hidden;
-			padding: 6px 20px;
-			color: #233446;
-			background: #f0f1f8;
-			border-radius: 18px;
-			animation: message 0.15s ease-in-out;
+			display: flex;
+			align-items: center;
+			margin: 0 12px;
 			
-			&.did-send {
+			> .online {
+				margin-left: 12px;
+				font-weight: 900;
+				color: white;
+			}
+			
+			> .next {
+				@include invert-on-hover;
+				
+				$height: $border-radius * 2;
+				
+				height: $height;
 				margin-left: auto;
+				padding: 0 20px;
+				line-height: $height;
+				font-weight: 900;
 				color: white;
 				background: $light-blue;
+				border-radius: $border-radius;
+				transition: color 0.3s, background 0.3s;
+			}
+		}
+		
+		> .messages {
+			flex-grow: 1;
+			overflow-y: auto;
+			scroll-behavior: smooth;
+			margin: 12px 0 12px;
+			padding: 4px 22px;
+			
+			> .header {
+				margin: 4px 0 16px;
+				text-align: center;
+				font-weight: 900;
+				color: white;
+				opacity: 0.7;
 			}
 			
-			&.pending {
-				opacity: 0.3;
-			}
-			
-			&:not(:last-child) {
-				margin-bottom: 8px;
-			}
-			
-			@keyframes message {
-				0% {
-					opacity: 0.5;
-					transform: scale(0.95) translateY(4px);
+			> .message {
+				max-width: 75%;
+				width: max-content;
+				overflow: hidden;
+				padding: 6px 20px;
+				color: #233446;
+				background: #f0f1f8;
+				border-radius: 18px;
+				animation: message 0.15s ease-in-out;
+				
+				&.did-send {
+					margin-left: auto;
+					color: white;
+					background: $light-blue;
 				}
 				
-				50% {
-					transform: scale(1.05);
+				&.pending {
+					opacity: 0.3;
+				}
+				
+				&:not(:last-child) {
+					margin-bottom: 8px;
+				}
+				
+				@keyframes message {
+					0% {
+						opacity: 0.5;
+						transform: scale(0.95) translateY(4px);
+					}
+					
+					50% {
+						transform: scale(1.05);
+					}
+				}
+			}
+		}
+		
+		> form {
+			display: flex;
+			margin: 0 12px;
+			
+			> * {
+				$height: $border-radius * 2;
+				
+				height: $height;
+				line-height: $height;
+				color: white;
+				border-radius: $border-radius;
+			}
+			
+			> input {
+				flex-grow: 1;
+				margin-right: 12px;
+				padding: 0 16px;
+				background: transparentize(#f0f1f8, 0.9);
+			}
+			
+			> button {
+				@include invert-on-hover;
+				
+				padding: 0 20px;
+				font-weight: 900;
+				background: $light-blue;
+				transition: color 0.3s, background 0.3s, opacity 0.3s;
+				
+				&:disabled {
+					opacity: 0.5;
 				}
 			}
 		}
 	}
 	
-	> form {
-		display: flex;
-		margin: 0 12px;
+	> footer {
+		justify-content: center;
+		margin-top: 20px;
+		padding: 0 12px;
 		
-		> * {
-			$height: $border-radius * 2;
-			
-			height: $height;
-			line-height: $height;
-			color: white;
-			border-radius: $border-radius;
+		&,
+		> a {
+			display: flex;
+			align-items: center;
 		}
 		
-		> input {
-			flex-grow: 1;
-			margin-right: 12px;
-			padding: 0 16px;
-			background: transparentize(#f0f1f8, 0.9);
-		}
-		
-		> button {
-			@include invert-on-hover;
+		> a {
+			transition: opacity 0.3s;
 			
-			padding: 0 20px;
-			font-weight: 900;
-			background: $light-blue;
-			transition: color 0.3s, background 0.3s, opacity 0.3s;
+			> img {
+				height: 20px;
+				margin-right: 6px;
+			}
 			
-			&:disabled {
+			> p {
+				font-weight: 900;
+				color: white;
+			}
+			
+			&:hover,
+			&:focus {
 				opacity: 0.5;
 			}
 		}

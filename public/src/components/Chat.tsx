@@ -4,6 +4,8 @@ import cx from 'classnames'
 import useChat from '../hooks/useChat'
 import useOnline from '../hooks/useOnline'
 
+import githubIcon from '../images/github.png'
+
 import '../scss/components/Chat.scss'
 
 export default () => {
@@ -58,60 +60,72 @@ export default () => {
 	}, [message, setPendingMessage])
 	
 	return (
-		<div className={cx('chat', { loading: !isReady })}>
-			{isReady
-				? (
-					<>
-						<div className="header">
+		<div className="chat-container">
+			<div className={cx('chat', { loading: !isReady })}>
+				{isReady
+					? (
+						<>
+							<div className="header">
+								{onlineCount === null || (
+									<p className="online">
+										{onlineCount} online
+									</p>
+								)}
+								<button className="next" onClick={next}>
+									Next chat
+								</button>
+							</div>
+							<div ref={onMessagesRef} className="messages">
+								<p className="header">
+									This is the tale of a beautiful thing.
+								</p>
+								{messages.map(({ id, didSend, data }) => (
+									<p
+										key={id}
+										className={cx('message', { 'did-send': didSend })}
+									>
+										{data}
+									</p>
+								))}
+								{pendingMessage && (
+									<div className="message pending">
+										{pendingMessage}
+									</div>
+								)}
+							</div>
+							<form onSubmit={send}>
+								<input
+									ref={onInputRef}
+									placeholder="Say anything!"
+									value={message}
+									onChange={({ target: { value } }) => setMessage(value)}
+								/>
+								<button disabled={!message}>
+									Send
+								</button>
+							</form>
+						</>
+					)
+					: (
+						<>
+							<div className="loader" />
 							{onlineCount === null || (
-								<p className="online">
-									{onlineCount} online
-								</p>
+								<p>{onlineCount} online</p>
 							)}
-							<button className="next" onClick={next}>
-								Next chat
-							</button>
-						</div>
-						<div ref={onMessagesRef} className="messages">
-							<p className="header">
-								This is the tale of a beautiful thing.
-							</p>
-							{messages.map(({ id, didSend, data }) => (
-								<p
-									key={id}
-									className={cx('message', { 'did-send': didSend })}
-								>
-									{data}
-								</p>
-							))}
-							{pendingMessage && (
-								<div className="message pending">
-									{pendingMessage}
-								</div>
-							)}
-						</div>
-						<form onSubmit={send}>
-							<input
-								ref={onInputRef}
-								placeholder="Say anything!"
-								value={message}
-								onChange={({ target: { value } }) => setMessage(value)}
-							/>
-							<button disabled={!message}>
-								Send
-							</button>
-						</form>
-					</>
-				)
-				: (
-					<>
-						<div className="loader" />
-						{onlineCount === null || (
-							<p>{onlineCount} online</p>
-						)}
-					</>
-				)
-			}
+						</>
+					)
+				}
+			</div>
+			<footer>
+				<a
+					href="https://github.com/kenmueller/glaze"
+					target="_blank"
+					rel="author nofollow noopener noreferrer"
+				>
+					<img src={githubIcon} alt="GitHub" />
+					<p>GitHub</p>
+				</a>
+			</footer>
 		</div>
 	)
 }

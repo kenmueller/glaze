@@ -1,5 +1,5 @@
 # Glaze
 
-> Anonymous fast-chat
+> Glaze - Chat Roulette
 
-<https://glaze-chat.web.app>
+<https://glaze.chat>
