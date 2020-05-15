@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 
 import firebase from '../firebase'
 import useUID from './useUID'
+import useAudio from './useAudio'
 
 import 'firebase/firestore'
 
@@ -21,6 +22,11 @@ export default () => {
 	const [messages, setMessages] = useState([] as Message[])
 	
 	const uid = useUID()
+	
+	const [playJoinChatSound] = useAudio(require('../sounds/join-chat.wav'))
+	const [playSendMessageSound] = useAudio(require('../sounds/send-message.mp3'))
+	const [playReceiveMessageSound] = useAudio(require('../sounds/receive-message.wav'))
+	const [playTypingSound, pauseTypingSound] = useAudio(require('../sounds/typing.mp3'), true)
 	
 	const loadChat = useCallback(async () => {
 		const { empty, docs } = await firestore
@@ -119,16 +125,20 @@ export default () => {
 						const { id } = doc
 						
 						switch (type) {
-							case 'added':
+							case 'added': {
+								const didSend = doc.get('from') === uid
+								
 								setMessages(messages => [
 									...messages,
-									{
-										id,
-										didSend: doc.get('from') === uid,
-										data: doc.get('data')
-									}
+									{ id, didSend, data: doc.get('data') }
 								])
+								
+								didSend
+									? playSendMessageSound()
+									: playReceiveMessageSound()
+								
 								break
+							}
 							case 'removed':
 								setMessages(messages =>
 									messages.filter(message => message.id !== id)
@@ -150,7 +160,18 @@ export default () => {
 			setPendingMessage(null)
 			setMessages([])
 		}
-	}, [chatId, uid, loadChat])
+	}, [chatId, uid, loadChat, playSendMessageSound, playReceiveMessageSound])
+	
+	useEffect(() => {
+		if (isReady)
+			playJoinChatSound()
+	}, [isReady, playJoinChatSound])
+	
+	useEffect(() => {
+		pendingMessage
+			? playTypingSound()
+			: pauseTypingSound()
+	}, [pendingMessage, playTypingSound, pauseTypingSound])
 	
 	return {
 		isReady,

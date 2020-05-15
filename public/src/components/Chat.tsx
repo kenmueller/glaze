@@ -38,8 +38,8 @@ export default () => {
 	}, [message]) // eslint-disable-line
 	
 	useEffect(() => {
-		window.onbeforeunload = stopChat
-	}, [stopChat])
+		window.onbeforeunload = isReady ? stopChat : null
+	}, [isReady, stopChat])
 	
 	useEffect(() => {
 		setPendingMessage(message)
