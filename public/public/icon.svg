@@ -1,0 +1,30 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M512 1024C442.667 1024 376.333 1010.5 313 983.5C249.667 956.5 195.167 920.167 149.5 874.5C103.833 828.833 67.5 774.333 40.5 711C13.5 647.667 0 581.333 0 512C0 442.667 13.5 376.333 40.5 313C67.5 249.667 103.833 195.167 149.5 149.5C195.167 103.833 249.667 67.5 313 40.5C376.333 13.5 442.667 0 512 0C581.333 0 647.667 13.5 711 40.5C774.333 67.5 828.833 103.833 874.5 149.5C920.167 195.167 956.5 249.667 983.5 313C1010.5 376.333 1024 442.667 1024 512C1024 581.333 1010.5 647.667 983.5 711C956.5 774.333 920.167 828.833 874.5 874.5C828.833 920.167 774.333 956.5 711 983.5C647.667 1010.5 581.333 1024 512 1024ZM512 320C458.667 320 413.333 338.667 376 376C338.667 413.333 320 458.667 320 512C320 565.333 338.667 610.667 376 648C413.333 685.333 458.667 704 512 704C565.333 704 610.667 685.333 648 648C685.333 610.667 704 565.333 704 512C704 458.667 685.333 413.333 648 376C610.667 338.667 565.333 320 512 320Z" fill="url(#paint0_linear)"/>
+<rect x="396.29" y="119.448" width="22" height="105" rx="11" transform="rotate(32.91 396.29 119.448)" fill="white"/>
+<rect x="853.049" y="282" width="22" height="105" rx="11" transform="rotate(32.91 853.049 282)" fill="white"/>
+<rect x="146.049" y="294" width="22" height="105" rx="11" transform="rotate(32.91 146.049 294)" fill="white"/>
+<rect x="255.049" y="348" width="22" height="105" rx="11" transform="rotate(32.91 255.049 348)" fill="white"/>
+<rect x="669.049" y="154" width="22" height="105" rx="11" transform="rotate(32.91 669.049 154)" fill="white"/>
+<rect x="481.787" y="112.567" width="22" height="105" rx="11" transform="rotate(-22.137 481.787 112.567)" fill="white"/>
+<rect x="196" y="175.29" width="22" height="105" rx="11" transform="rotate(-22.137 196 175.29)" fill="white"/>
+<rect x="107" y="512.29" width="22" height="105" rx="11" transform="rotate(-22.137 107 512.29)" fill="white"/>
+<rect x="256" y="770.29" width="22" height="105" rx="11" transform="rotate(-22.137 256 770.29)" fill="white"/>
+<rect x="630" y="761.29" width="22" height="105" rx="11" transform="rotate(-22.137 630 761.29)" fill="white"/>
+<rect x="814" y="673.29" width="22" height="105" rx="11" transform="rotate(-22.137 814 673.29)" fill="white"/>
+<rect x="774" y="435.29" width="22" height="105" rx="11" transform="rotate(-22.137 774 435.29)" fill="white"/>
+<rect x="498.43" y="864.2" width="22" height="105" rx="11" transform="rotate(106.566 498.43 864.2)" fill="white"/>
+<rect x="600.506" y="902.208" width="22" height="105" rx="11" transform="rotate(63.4539 600.506 902.208)" fill="white"/>
+<rect x="755.748" y="665" width="22" height="34.3711" rx="11" transform="rotate(63.4539 755.748 665)" fill="white"/>
+<rect x="185.748" y="697" width="22" height="34.3711" rx="11" transform="rotate(63.4539 185.748 697)" fill="white"/>
+<rect x="888" y="403.29" width="22" height="49.0921" rx="11" transform="rotate(-22.137 888 403.29)" fill="white"/>
+<rect x="716.796" y="250.41" width="22" height="49.0921" rx="11" transform="rotate(5.39662 716.796 250.41)" fill="white"/>
+<rect x="330.617" y="276" width="22" height="49.0921" rx="11" transform="rotate(5.39662 330.617 276)" fill="white"/>
+<defs>
+<linearGradient id="paint0_linear" x1="284.5" y1="127" x2="842.5" y2="999" gradientUnits="userSpaceOnUse">
+<stop stop-color="#4F62D5"/>
+<stop offset="0.364039" stop-color="#A734B8"/>
+<stop offset="0.668628" stop-color="#DB2D78"/>
+<stop offset="1" stop-color="#FBC55F"/>
+</linearGradient>
+</defs>
+</svg>
