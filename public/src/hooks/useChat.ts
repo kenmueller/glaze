@@ -194,14 +194,13 @@ export default () => {
 			if (!chatId)
 				return
 			
-			const batch = firestore.batch()
-			
-			batch.delete(firestore.doc(`chats/${chatId}`))
-			batch.set(firestore.doc(`requests/${uid}`), {
-				available: false
-			})
-			
-			return batch.commit()
+			navigator.sendBeacon(
+				'https://glaze.chat/api/stop-chat',
+				JSON.stringify({
+					chat: chatId,
+					user: uid
+				})
+			)
 		}, [chatId, uid])
 	}
 }

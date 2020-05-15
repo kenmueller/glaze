@@ -13,3 +13,9 @@ ReactDOM.render((
 ), document.getElementById('root'))
 
 serviceWorker.register()
+
+if (!navigator.sendBeacon)
+	navigator.sendBeacon = (url, body) => {
+		fetch(url, { method: 'POST', body, credentials: 'include' })
+		return true
+	}

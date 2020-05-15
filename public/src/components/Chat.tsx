@@ -2,6 +2,7 @@ import React, { useState, useCallback, FormEvent, useEffect } from 'react'
 import cx from 'classnames'
 
 import useChat from '../hooks/useChat'
+import useOnline from '../hooks/useOnline'
 
 import '../scss/components/Chat.scss'
 
@@ -14,6 +15,8 @@ export default () => {
 		sendMessage,
 		stopChat
 	} = useChat()
+	
+	const { onlineCount, setIsOnline } = useOnline()
 	
 	const [message, setMessage] = useState('')
 	
@@ -38,8 +41,17 @@ export default () => {
 	}, [message]) // eslint-disable-line
 	
 	useEffect(() => {
-		window.onbeforeunload = isReady ? stopChat : null
-	}, [isReady, stopChat])
+		setIsOnline(true)
+	}, [setIsOnline])
+	
+	useEffect(() => {
+		window.onbeforeunload = isReady
+			? () => {
+				stopChat()
+				setIsOnline(false)
+			}
+			: null
+	}, [isReady, stopChat, setIsOnline])
 	
 	useEffect(() => {
 		setPendingMessage(message)
@@ -50,9 +62,16 @@ export default () => {
 			{isReady
 				? (
 					<>
-						<button className="next" onClick={next}>
-							Next chat
-						</button>
+						<div className="header">
+							{onlineCount === null || (
+								<p className="online">
+									{onlineCount} online
+								</p>
+							)}
+							<button className="next" onClick={next}>
+								Next chat
+							</button>
+						</div>
 						<div ref={onMessagesRef} className="messages">
 							<p className="header">
 								This is the start of a beautiful thing.
@@ -87,7 +106,9 @@ export default () => {
 				: (
 					<>
 						<div className="loader" />
-						<p>Searching for someone...</p>
+						{onlineCount === null || (
+							<p>{onlineCount} online</p>
+						)}
 					</>
 				)
 			}
