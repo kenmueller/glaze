@@ -57,20 +57,32 @@
 		}
 	}
 	
-	> .next {
-		@include invert-on-hover;
+	> .header {
+		display: flex;
+		align-items: center;
+		margin: 0 12px;
 		
-		$height: $border-radius * 2;
+		> .online {
+			margin-left: 12px;
+			font-weight: 900;
+			color: white;
+		}
 		
-		height: $height;
-		margin: 0 12px 0 auto;
-		padding: 0 20px;
-		line-height: $height;
-		font-weight: 900;
-		color: white;
-		background: $light-blue;
-		border-radius: $border-radius;
-		transition: color 0.3s, background 0.3s;
+		> .next {
+			@include invert-on-hover;
+			
+			$height: $border-radius * 2;
+			
+			height: $height;
+			margin-left: auto;
+			padding: 0 20px;
+			line-height: $height;
+			font-weight: 900;
+			color: white;
+			background: $light-blue;
+			border-radius: $border-radius;
+			transition: color 0.3s, background 0.3s;
+		}
 	}
 	
 	> .messages {
