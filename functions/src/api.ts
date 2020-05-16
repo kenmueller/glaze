@@ -45,6 +45,7 @@ app.post('/api/stop-chat', async ({ body }, res) => {
 		typeof participantCount !== 'number' || participantCount < 2
 			? batch.delete(chatDoc)
 			: batch.update(chatDoc, {
+				participants: FieldValue.increment(-1),
 				[`pendingMessages.${uid}`]: FieldValue.delete()
 			})
 		
