@@ -106,8 +106,6 @@
 				width: max-content;
 				overflow: hidden;
 				padding: 6px 20px;
-				color: #233446;
-				background: #f0f1f8;
 				border-radius: 18px;
 				animation: message 0.15s ease-in-out;
 				
@@ -178,29 +176,54 @@
 		margin-top: 20px;
 		padding: 0 12px;
 		
+		&.ready {
+			justify-content: space-between;
+		}
+		
 		&,
-		> a {
+		> .group-toggle,
+		> .github {
 			display: flex;
 			align-items: center;
 		}
 		
-		> a {
+		> .group-toggle,
+		> .github {
 			transition: opacity 0.3s;
-			
-			> img {
-				height: 20px;
-				margin-right: 6px;
-			}
 			
 			> p {
 				font-weight: 900;
 				color: white;
 			}
 			
-			&:hover,
-			&:focus {
+			&:hover {
 				opacity: 0.5;
 			}
+		}
+		
+		> .group-toggle {
+			&.on > .indicator {
+				background: #00d388;
+				border-width: 0;
+			}
+			
+			> .indicator {
+				$dimension: 24px;
+				
+				flex-shrink: 0;
+				width: $dimension;
+				height: $dimension;
+				margin-right: 8px;
+				border: 2px solid #4a5863;
+				border-radius: 50%;
+				transition: background 0.3s, border-width 0.3s;
+			}
+		}
+		
+		> .github > img {
+			flex-shrink: 0;
+			height: 20px;
+			margin-right: 6px;
 		}
 	}
 }

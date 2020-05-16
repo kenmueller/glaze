@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import useChat from '../hooks/useChat'
 import useOnline from '../hooks/useOnline'
+import { MAX_PARTICIPANT_COUNT } from '../constants'
 
 import githubIcon from '../images/github.png'
 
@@ -11,11 +12,15 @@ import '../scss/components/Chat.scss'
 export default () => {
 	const {
 		isReady,
-		pendingMessage,
+		pendingMessages,
 		setPendingMessage,
 		messages,
 		sendMessage,
-		stopChat
+		stopChat,
+		participantCount,
+		isGroupChat,
+		setIsGroupChat,
+		colorForParticipant
 	} = useChat()
 	
 	const { onlineCount, setIsOnline } = useOnline()
@@ -36,7 +41,7 @@ export default () => {
 	const onMessagesRef = useCallback((div: HTMLDivElement | null) => {
 		if (div)
 			div.scrollTop = div.scrollHeight
-	}, [messages, pendingMessage]) // eslint-disable-line
+	}, [messages, pendingMessages]) // eslint-disable-line
 	
 	const onInputRef = useCallback((input: HTMLInputElement | null) => {
 		input?.focus()
@@ -77,21 +82,30 @@ export default () => {
 							</div>
 							<div ref={onMessagesRef} className="messages">
 								<p className="header">
-									This is the tale of a beautiful thing.
+									Say hi! You're chatting with {
+										participantCount > 2
+											? `${participantCount - 1} other people`
+											: 'a random person'
+									}.
 								</p>
-								{messages.map(({ id, didSend, data }) => (
+								{messages.map(({ id, didSend, from, data }) => (
 									<p
 										key={id}
 										className={cx('message', { 'did-send': didSend })}
+										style={didSend ? undefined : colorForParticipant(from)}
 									>
 										{data}
 									</p>
 								))}
-								{pendingMessage && (
-									<div className="message pending">
-										{pendingMessage}
-									</div>
-								)}
+								{pendingMessages.map(({ uid, data }) => (
+									<p
+										key={uid}
+										className="message pending"
+										style={colorForParticipant(uid)}
+									>
+										{data}
+									</p>
+								))}
 							</div>
 							<form onSubmit={send}>
 								<input
@@ -116,8 +130,18 @@ export default () => {
 					)
 				}
 			</div>
-			<footer>
+			<footer className={cx({ ready: isReady })}>
+				{isReady && (
+					<button
+						className={cx('group-toggle', { on: isGroupChat })}
+						onClick={() => setIsGroupChat(!isGroupChat)}
+					>
+						<div className="indicator" />
+						<p>Group chat ({participantCount}/{MAX_PARTICIPANT_COUNT})</p>
+					</button>
+				)}
 				<a
+					className="github"
 					href="https://github.com/kenmueller/glaze"
 					target="_blank"
 					rel="author nofollow noopener noreferrer"

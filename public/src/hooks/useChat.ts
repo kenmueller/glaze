@@ -1,24 +1,40 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 import firebase from '../firebase'
 import useUID from './useUID'
 import useAudio from './useAudio'
+import { ChatColor, randomElement } from '../utils'
+import { CHAT_COLORS, DEFAULT_CHAT_COLOR, MAX_PARTICIPANT_COUNT } from '../constants'
 
 import 'firebase/firestore'
+
+export interface PendingMessage {
+	uid: string
+	data: string
+}
 
 export interface Message {
 	id: string
 	didSend: boolean
+	from: string
 	data: string
 }
 
+const { FieldValue } = firebase.firestore
 const firestore = firebase.firestore()
 
 export default () => {
+	const availableColors = useRef(CHAT_COLORS)
+	
 	const [isReady, setIsReady] = useState(false)
 	const [chatId, setChatId] = useState(null as string | null)
 	
-	const [pendingMessage, setPendingMessage] = useState(null as string | null)
+	const [pendingMessages, setPendingMessages] = useState([] as PendingMessage[])
+	const [participantCount, setParticipantCount] = useState(0)
+	const [isGroupChat, setIsGroupChat] = useState(false)
+	
+	const [colors, setColors] = useState({} as Record<string, ChatColor>)
+	
 	const [messages, setMessages] = useState([] as Message[])
 	
 	const uid = useUID()
@@ -43,6 +59,7 @@ export default () => {
 			
 			batch.set(chatDoc, {
 				available: true,
+				participants: 1,
 				creator: uid
 			})
 			
@@ -54,7 +71,10 @@ export default () => {
 			const snapshot = docs[0]
 			
 			batch.update(snapshot.ref, {
-				available: false
+				available: Boolean(
+					snapshot.get('group') && ((snapshot.get('participants') + 1) < MAX_PARTICIPANT_COUNT)
+				),
+				participants: FieldValue.increment(1)
 			})
 			
 			const requestData = {
@@ -98,6 +118,9 @@ export default () => {
 							available: false
 						})
 					
+					setIsGroupChat(snapshot.get('group') ?? false)
+					setParticipantCount(snapshot.get('participants') ?? 0)
+					
 					const pendingMessages: (
 						Record<string, string> | undefined
 					) = snapshot.get('pendingMessages')
@@ -105,11 +128,36 @@ export default () => {
 					if (!pendingMessages)
 						return
 					
-					for (const [key, message] of Object.entries(pendingMessages))
-						if (key !== uid)
-							return setPendingMessage(message)
+					const entries = Object.entries(pendingMessages)
 					
-					setPendingMessage(null)
+					setPendingMessages(entries.reduce((acc, [key, data]) => (
+						!data || (key === uid)
+							? acc
+							: [...acc, { uid: key, data }]
+					), [] as PendingMessage[]))
+					
+					setColors(colors => {
+						const acc = { ...colors }
+						
+						for (const [key] of entries) {
+							if (key in acc || key === uid)
+								continue
+							
+							if (entries.length === 2) {
+								acc[key] = DEFAULT_CHAT_COLOR
+								return acc
+							}
+							
+							const element = randomElement(availableColors.current, null)
+							
+							acc[key] = element?.value ?? DEFAULT_CHAT_COLOR
+							
+							availableColors.current =
+								availableColors.current.filter((_, i) => i !== element?.index)
+						}
+						
+						return acc
+					})
 				},
 				error => {
 					alert(error.message)
@@ -126,11 +174,12 @@ export default () => {
 						
 						switch (type) {
 							case 'added': {
-								const didSend = doc.get('from') === uid
+								const from = doc.get('from')
+								const didSend = from === uid
 								
 								setMessages(messages => [
 									...messages,
-									{ id, didSend, data: doc.get('data') }
+									{ id, didSend, from, data: doc.get('data') }
 								])
 								
 								didSend
@@ -157,7 +206,10 @@ export default () => {
 			removeChatListener()
 			removeMessagesListener()
 			
-			setPendingMessage(null)
+			setPendingMessages([])
+			setParticipantCount(0)
+			availableColors.current = CHAT_COLORS
+			setColors({})
 			setMessages([])
 		}
 	}, [chatId, uid, loadChat, playSendMessageSound, playReceiveMessageSound])
@@ -168,14 +220,14 @@ export default () => {
 	}, [isReady, playJoinChatSound])
 	
 	useEffect(() => {
-		pendingMessage
+		pendingMessages.length > 0
 			? playTypingSound()
 			: pauseTypingSound()
-	}, [pendingMessage, playTypingSound, pauseTypingSound])
+	}, [pendingMessages, playTypingSound, pauseTypingSound])
 	
 	return {
 		isReady,
-		pendingMessage,
+		pendingMessages,
 		setPendingMessage: useCallback((message: string) => {
 			if (chatId)
 				firestore.doc(`chats/${chatId}`).update({
@@ -191,16 +243,27 @@ export default () => {
 				})
 		}, [chatId, uid]),
 		stopChat: useCallback(() => {
-			if (!chatId)
-				return
-			
-			navigator.sendBeacon(
-				'https://glaze.chat/api/stop-chat',
-				JSON.stringify({
-					chat: chatId,
-					user: uid
+			if (chatId)
+				navigator.sendBeacon(
+					'https://glaze.chat/api/stop-chat',
+					JSON.stringify({
+						chat: chatId,
+						user: uid,
+						count: participantCount - 1
+					})
+				)
+		}, [chatId, uid, participantCount]),
+		participantCount,
+		isGroupChat,
+		setIsGroupChat: useCallback((isGroupChat: boolean) => {
+			if (chatId)
+				firestore.doc(`chats/${chatId}`).update({
+					available: isGroupChat,
+					group: isGroupChat
 				})
-			)
-		}, [chatId, uid])
+		}, [chatId]),
+		colorForParticipant: useCallback((key: string) => (
+			colors[key] ?? DEFAULT_CHAT_COLOR
+		), [colors])
 	}
 }

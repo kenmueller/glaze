@@ -29,14 +29,20 @@ app.post('/api/online', async ({ body }, res) => {
 
 app.post('/api/stop-chat', async ({ body }, res) => {
 	try {
-		const { chat: chatId, user: uid } = JSON.parse(body)
+		const {
+			chat: chatId,
+			user: uid,
+			count: participantCount
+		} = JSON.parse(body)
 		
 		if (!(typeof chatId === 'string' && typeof uid === 'string'))
 			throw new Error('Invalid types')
 		
 		const batch = firestore.batch()
 		
-		batch.delete(firestore.doc(`chats/${chatId}`))
+		if (typeof participantCount !== 'number' || participantCount < 2)
+			batch.delete(firestore.doc(`chats/${chatId}`))
+		
 		batch.set(firestore.doc(`requests/${uid}`), {
 			available: false
 		})
