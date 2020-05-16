@@ -5,16 +5,28 @@
 	align-items: center;
 	margin: 15px 30px;
 	
+	@media (min-width: 570px) {
+		> img {
+			height: 80px !important;
+		}
+		
+		> .title {
+			font-size: 70px !important;
+		}
+	}
+	
 	> img {
-		height: 80px;
+		height: 60px;
 		margin-right: 20px;
+		transition: height 0.3s;
 	}
 	
 	> .title {
 		font-family: Billabong, $font-family;
-		font-size: 70px;
+		font-size: 50px;
 		font-weight: 900;
 		color: white;
 		transform: translateY(4px);
+		transition: font-size 0.3s;
 	}
 }
