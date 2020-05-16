@@ -5,6 +5,7 @@ import * as cors from 'cors'
 
 import { parseStringToBoolean } from './utils'
 
+const { FieldValue } = admin.firestore
 const firestore = admin.firestore()
 const app = express()
 
@@ -17,7 +18,7 @@ app.post('/api/online', async ({ body }, res) => {
 		const isOnline = parseStringToBoolean(body)
 		
 		await firestore.doc('counts/online').update({
-			value: admin.firestore.FieldValue.increment(isOnline ? 1 : -1)
+			value: FieldValue.increment(isOnline ? 1 : -1)
 		})
 		
 		res.send()
@@ -39,9 +40,13 @@ app.post('/api/stop-chat', async ({ body }, res) => {
 			throw new Error('Invalid types')
 		
 		const batch = firestore.batch()
+		const chatDoc = firestore.doc(`chats/${chatId}`)
 		
-		if (typeof participantCount !== 'number' || participantCount < 2)
-			batch.delete(firestore.doc(`chats/${chatId}`))
+		typeof participantCount !== 'number' || participantCount < 2
+			? batch.delete(chatDoc)
+			: batch.update(chatDoc, {
+				[`pendingMessages.${uid}`]: FieldValue.delete()
+			})
 		
 		batch.set(firestore.doc(`requests/${uid}`), {
 			available: false
